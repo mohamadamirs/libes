@@ -1,0 +1,100 @@
+---
+import { supabase } from "../lib/supabase";
+import "../styles/global.css"; // Pastikan CSS diimpor di sini
+
+// --- LOGIKA CEK APAKAH SUDAH LOGIN ---
+const accessToken = Astro.cookies.get("sb-access-token")?.value;
+const refreshToken = Astro.cookies.get("sb-refresh-token")?.value;
+
+if (accessToken && refreshToken) {
+  // Coba verifikasi token ke Supabase
+  const { data, error } = await supabase.auth.setSession({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+  });
+
+  // Jika token valid, langsung arahkan ke dashboard
+  if (!error) {
+    return Astro.redirect("/admin/dashboard");
+  }
+}
+
+let errorMessage = "";
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const email = data.get("email")?.toString();
+    const password = data.get("password")?.toString();
+
+    console.log("Mencoba login untuk:", email); // DEBUG 1: Cek input
+
+    if (email && password) {
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error("Supabase Error:", error.message); // DEBUG 2: Cek error Supabase
+        errorMessage = error.message;
+      } else {
+        console.log("Login Berhasil!"); // DEBUG 3: Berhasil
+
+        const { access_token, refresh_token } = authData.session;
+        Astro.cookies.set("sb-access-token", access_token, {
+          path: "/",
+          httpOnly: true, // Tidak bisa diintip oleh JavaScript jahat di browser
+          secure: true, // Hanya jalan di HTTPS
+          sameSite: "strict",
+        });
+
+        Astro.cookies.set("sb-refresh-token", refresh_token, {
+          path: "/",
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict",
+        });
+
+        return Astro.redirect("/admin/dashboard");
+      }
+    }
+  } catch (e) {
+    console.error("System Error:", e);
+    errorMessage = "Terjadi kesalahan sistem.";
+  }
+}
+---
+
+<html lang="id">
+  <body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded shadow-md w-96">
+      <h1 class="text-2xl font-bold mb-4">Login Admin</h1>
+
+      {errorMessage && <p class="text-red-500 mb-4">{errorMessage}</p>}
+
+      <form method="POST" class="flex flex-col gap-4">
+        <input
+          type="email"
+          name="email"
+          placeholder="Email Admin"
+          required
+          class="border p-2 rounded"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+          class="border p-2 rounded"
+        />
+        <button
+          type="submit"
+          class="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+        >
+          Masuk
+        </button>
+      </form>
+    </div>
+  </body>
+</html>

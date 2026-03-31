@@ -1,0 +1,34 @@
+---
+import "../styles/global.css";
+import { ClientRouter } from 'astro:transitions';
+
+interface Props {
+  title: string; // Judul halaman
+  description?: string; // Deskripsi (opsional, tanda ? artinya boleh kosong)
+}
+
+// 2. Tangkap data yang dikirim oleh halaman
+const { title, description = "Wadah literasi digital wong Brebes" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.bunny.net" />
+    <link
+      href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800"
+      rel="stylesheet"
+    />
+    <ClientRouter />
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+

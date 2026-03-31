@@ -1,0 +1,18 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Main from "../components/utama/Main.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout
+  title="Literasi Brebes"
+  description="Komunitas untuk berkembang"
+>
+  <!-- header -->
+  <Header transition:persist/>
+  <!-- Main Content -->
+  <Main transition:animate="fade"/>
+  <!-- Footer Semantik -->
+  <Footer />
+</Layout>

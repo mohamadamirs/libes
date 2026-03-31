@@ -1,0 +1,15 @@
+/* src/styles/global.css */
+@import "tailwindcss";
+
+@layer base {
+  html {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* Khusus untuk Heading agar lebih tegas */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em; /* Membuat heading terlihat lebih modern */
+  }
+}

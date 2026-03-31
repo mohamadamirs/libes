@@ -1,0 +1,30 @@
+{
+  "name": "libes",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/vercel": "10.0.2",
+    "@supabase/supabase-js": "^2.100.0",
+    "@tailwindcss/vite": "^4.2.2",
+    "astro": "^6.0.8",
+    "googleapis": "^171.4.0",
+    "tailwindcss": "^4.2.2"
+  },
+  "overrides": {
+    "@astrojs/vercel": {
+      "astro": "$astro"
+    },
+    "path-to-regexp": "^6.3.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1",
+    "prettier-plugin-astro": "^0.14.1"
+  }
+}

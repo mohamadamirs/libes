@@ -1,0 +1,11 @@
+---
+// src/pages/admin/logout.astro
+import { supabase } from "../../lib/supabase";
+
+if (Astro.request.method === "POST") {
+  await supabase.auth.signOut();
+  Astro.cookies.delete("sb-access-token", { path: "/" });
+  Astro.cookies.delete("sb-refresh-token", { path: "/" });
+  return Astro.redirect("/login");
+}
+---
