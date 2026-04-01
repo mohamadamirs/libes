@@ -1,18 +1,25 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
-import Main from "../components/utama/Main.astro";
+import Hero from "../components/sections/Hero.astro";
+import Agenda from "../components/sections/Agenda.astro";
+import RuangSuaraFeed from "../components/sections/RuangSuaraFeed.astro";
+import GaleriGrid from "../components/sections/GaleriGrid.astro";
 import Footer from "../components/Footer.astro";
+import { supabase } from "../lib/supabase";
+import { ArticleService } from "../services/articleService";
+
+const articleService = new ArticleService(supabase);
+const { data: articles = [] } = await articleService.getPublishedArticles(3); // Ambil 3 saja untuk landing page
 ---
 
-<Layout
-  title="Literasi Brebes"
-  description="Komunitas untuk berkembang"
->
-  <!-- header -->
-  <Header transition:persist/>
-  <!-- Main Content -->
-  <Main transition:animate="fade"/>
-  <!-- Footer Semantik -->
+<Layout title="Literasi Brebesan - Merawat Nalar, Menjalin Kedekatan" description="Ruang temu alternatif di Brebes untuk membaca, berdiskusi, dan bergerak bersama.">
+  <Header />
+  <main>
+    <Hero />
+    <Agenda />
+    <RuangSuaraFeed articles={articles} />
+    <GaleriGrid />
+  </main>
   <Footer />
 </Layout>

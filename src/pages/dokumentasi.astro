@@ -4,6 +4,7 @@ import Header from "../components/Header.astro";
 import Sidebar from "../components/docs/Sidebar.astro";
 import FolderGrid from "../components/docs/FolderGrid.astro";
 import FileGrid from "../components/docs/FileGrid.astro";
+import Footer from "../components/Footer.astro";
 import { getArchiveNavigation } from "../lib/googleDrive";
 import { getFolders } from "../lib/googleDrive";
 
@@ -57,4 +58,5 @@ const { data, view, baseUrl } = await getArchiveNavigation(yearId, monthId, acti
       </div>
     </main>
   </div>
+  <Footer />
 </Layout>

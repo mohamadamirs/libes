@@ -1,0 +1,49 @@
+---
+import '../styles/global.css'; // Sesuaikan path css tailwind kamu
+
+// Menangkap pesan error dari URL parameter jika registrasi gagal
+const error = Astro.url.searchParams.get('error');
+---
+
+<html lang="id">
+  <head>
+    <title>Mendaftar - CMS</title>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen py-10">
+
+    <div class="bg-white p-8 rounded-xl shadow-lg max-w-sm w-full">
+      <h1 class="text-2xl font-bold text-center mb-2 text-gray-800">Buat Akun</h1>
+      <p class="text-center text-sm text-gray-500 mb-6">Mendaftar sebagai penulis</p>
+
+      {error && (
+        <div class="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm text-center">
+          {error}
+        </div>
+      )}
+
+      <form action="/api/auth/signup" method="POST" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+          <input type="text" name="full_name" required placeholder="John Doe" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Email</label>
+          <input type="email" name="email" required placeholder="john@example.com" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Password</label>
+          <input type="password" name="password" required placeholder="Minimal 6 karakter" minlength="6" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <button type="submit" class="w-full bg-green-600 text-white font-semibold py-2 rounded-md hover:bg-green-700 transition mt-2">
+          Daftar Sekarang
+        </button>
+      </form>
+
+      <div class="mt-6 text-center text-sm text-gray-600">
+        Sudah punya akun?
+        <a href="/login" class="text-blue-600 hover:underline font-medium">Masuk di sini</a>
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -43,7 +43,7 @@ const initialToken = data.nextPageToken || null;
       this.isFetching = false;
       this.token = this.dataset.token;
       this.activityId = this.dataset.activity;
-      this.observer = null; // Simpan observer agar bisa dihapus
+      this.observer = null;
     }
 
     connectedCallback() {
@@ -56,7 +56,6 @@ const initialToken = data.nextPageToken || null;
       this.setupObserver();
     }
 
-    // PENTING: Bersihkan observer saat pindah halaman agar tidak bocor
     disconnectedCallback() {
       if (this.observer) {
         this.observer.disconnect();
@@ -74,7 +73,6 @@ const initialToken = data.nextPageToken || null;
     }
 
     setupObserver() {
-      // Jika token sudah null sejak awal, jangan pasang observer
       if (!this.token || this.token === "null") {
         this.sensor?.classList.add('hidden');
         return;
@@ -84,7 +82,7 @@ const initialToken = data.nextPageToken || null;
         if (entries[0].isIntersecting) {
           this.loadMore();
         }
-      }, { rootMargin: '400px' }); // Margin lebih besar agar loading lebih awal
+      }, { rootMargin: '400px' });
       
       this.observer.observe(this.sensor);
     }
@@ -94,7 +92,6 @@ const initialToken = data.nextPageToken || null;
       this.isFetching = true;
 
       try {
-        // Gunakan limit yang sedikit lebih besar (misal 8) agar tidak terlalu sering fetch
         const res = await fetch(`/api/drive-files?folderId=${this.activityId}&pageToken=${this.token}&limit=8`);
         const data = await res.json();
         
@@ -149,7 +146,6 @@ const initialToken = data.nextPageToken || null;
     }
   }
 
-  // LOGIKA PENYELAMAT: Cek apakah elemen sudah terdaftar sebelum mendefinisikan ulang
   if (!customElements.get('file-gallery')) {
     customElements.define('file-gallery', FileGallery);
   }

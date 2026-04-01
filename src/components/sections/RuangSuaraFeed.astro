@@ -1,0 +1,32 @@
+---
+import RuangSuaraCard from "../features/ruang-suara/RuangSuaraCard.astro";
+import Badge from "../ui/Badge.astro";
+
+interface Props {
+  articles: any[];
+}
+
+const { articles = [] } = Astro.props;
+---
+<section id="ruang-suara" class="py-16 px-4 bg-white text-left">
+  <div class="container mx-auto max-w-7xl">
+    <div class="flex flex-col md:flex-row items-start justify-between mb-12 gap-4 text-left">
+      <div class="space-y-3 text-left">
+        <Badge variant="primary" class="px-3 py-1 text-[9px]">Terbaru</Badge>
+        <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight text-left">Ruang <span class="text-blue-600 italic font-serif font-light">Suara</span></h2>
+      </div>
+      <a href="/ruang-suara" class="group inline-flex items-center gap-2 text-slate-900 font-black text-[10px] uppercase tracking-widest hover:text-blue-600 transition-colors pt-1">
+        Lihat Semua
+        <span class="group-hover:translate-x-1 transition-transform">→</span>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+      {articles.length > 0 ? (
+        articles.map((article) => <RuangSuaraCard article={article} />)
+      ) : (
+        <div class="col-span-full py-12 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200 text-slate-400 font-bold uppercase tracking-widest text-[10px] px-8">Belum ada tulisan</div>
+      )}
+    </div>
+  </div>
+</section>

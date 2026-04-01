@@ -1,0 +1,68 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import RuangSuaraCard from "../components/features/ruang-suara/RuangSuaraCard.astro";
+import { PostTriggerWrapper } from "../components/features/ruang-suara/PostTriggerWrapper";
+import { supabase } from "../lib/supabase";
+import { ArticleService } from "../services/articleService";
+
+const articleService = new ArticleService(supabase);
+const { data: articles, error } = await articleService.getPublishedArticles();
+
+// Cek Auth
+const user = Astro.locals.user;
+const isLoggedIn = !!user;
+const userName = Astro.locals.user_name;
+const userId = user?.id;
+
+if (error) {
+  console.error("Error fetching articles:", error.message);
+}
+---
+
+<Layout title="Ruang Suara - Literasi Brebesan" description="Suara kolektif, opini, dan pemikiran anak muda Brebes dalam bentuk tulisan dan zine.">
+  <Header />
+  <main class="pt-32 pb-20 px-4 min-h-screen bg-slate-50/30">
+    <div class="container mx-auto max-w-6xl">
+      
+      <!-- Header Halaman -->
+      <div class="text-center mb-16 space-y-4">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+          Ruang <span class="text-blue-600 font-serif italic">Suara</span>
+        </h1>
+        <p class="text-slate-500 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+          Wadah bagi setiap suara yang ingin didengar. Dari keresahan menjadi tulisan, dari pemikiran menjadi gerakan nyata untuk Brebes.
+        </p>
+        <div class="flex justify-center pt-4">
+          <div class="h-1 w-24 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
+        </div>
+      </div>
+
+      <!-- Trigger Berbagi Suara (React Modal) -->
+      <PostTriggerWrapper client:load isLoggedIn={isLoggedIn} userName={userName} userId={userId} />
+
+      <!-- Grid Artikel -->
+      {articles && articles.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {articles.map((article) => (
+            <RuangSuaraCard article={article} />
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-24 bg-white rounded-3xl border-2 border-dashed border-slate-200 max-w-2xl mx-auto">
+          <div class="text-6xl mb-6">🖋️</div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-2">Belum ada karya tayang</h3>
+          <p class="text-slate-500 px-8">Mari berkontribusi dengan mengirimkan tulisanmu melalui dashboard penulis!</p>
+          <div class="mt-8">
+            <a href="/register" class="inline-flex items-center gap-2 px-8 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-slate-900 transition-all shadow-xl shadow-blue-100">
+              Mulai Menulis
+            </a>
+          </div>
+        </div>
+      )}
+
+    </div>
+  </main>
+  <Footer />
+</Layout>

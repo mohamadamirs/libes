@@ -1,0 +1,40 @@
+---
+interface Props {
+  category?: string;
+  variant?: 'primary' | 'success' | 'warning' | 'error' | 'outline';
+  class?: string;
+}
+
+const { category, variant, class: className } = Astro.props;
+
+// Sentralisasi pemetaan kategori ke warna
+const categoryMap: Record<string, string> = {
+  'Tanya': 'bg-amber-100 text-amber-700 border-amber-200', 
+  'Jawab': 'bg-emerald-100 text-emerald-700 border-emerald-200', 
+  'Suara': 'bg-blue-100 text-blue-700 border-blue-200', 
+  'Umum': 'bg-slate-100 text-slate-600 border-slate-200',
+  'Zine': 'bg-indigo-100 text-indigo-700 border-indigo-200',
+};
+
+const getVariantClass = () => {
+  if (category && categoryMap[category]) {
+    return categoryMap[category];
+  }
+  
+  const variants = {
+    primary: 'bg-blue-600 text-white border-blue-700',
+    success: 'bg-emerald-500 text-white border-emerald-600',
+    warning: 'bg-amber-500 text-white border-amber-600',
+    error: 'bg-rose-600 text-white border-rose-700',
+    outline: 'bg-white border-slate-200 text-slate-600'
+  };
+  
+  return variants[variant || 'primary'];
+};
+
+const baseClass = "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border inline-flex items-center justify-center transition-all duration-300 shadow-sm";
+---
+
+<span class:list={[baseClass, getVariantClass(), className]}>
+  <slot>{category}</slot>
+</span>

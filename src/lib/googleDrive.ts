@@ -1,15 +1,15 @@
-import { google } from 'googleapis'; // Mengimpor library googleapis untuk berinteraksi dengan Google APIs
+import { google } from "googleapis"; // Mengimpor library googleapis untuk berinteraksi dengan Google APIs
 
 // Mengatur autentikasi JWT (JSON Web Token) untuk akun layanan Google.
 // Kredensial diambil dari variabel lingkungan.
 const auth = new google.auth.JWT({
   email: import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL, // Email akun layanan
-  key: import.meta.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'), // Kunci privat, mengganti karakter newline yang di-escape
-  scopes: ['https://www.googleapis.com/auth/drive.readonly'], // Scope akses: hanya membaca Google Drive
+  key: import.meta.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"), // Kunci privat, mengganti karakter newline yang di-escape
+  scopes: ["https://www.googleapis.com/auth/drive.readonly"], // Scope akses: hanya membaca Google Drive
 });
 
 // Menginisialisasi objek Google Drive API dengan versi v3 dan autentikasi yang sudah diatur.
-const drive = google.drive({ version: 'v3', auth });
+const drive = google.drive({ version: "v3", auth });
 
 const ROOT_ID = import.meta.env.GOOGLE_DRIVE_ROOT_FOLDER_ID;
 
@@ -17,8 +17,8 @@ export async function getFolders(parentId: string) {
   const res = await drive.files.list({
     // Query untuk mencari folder: 'parentId' adalah induk, mimeType adalah folder, dan tidak dihapus.
     q: `'${parentId}' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false`,
-    fields: 'files(id, name)', // Hanya mengambil ID dan nama file/folder.
-    orderBy: 'name desc', // Mengurutkan hasil berdasarkan nama secara menurun.
+    fields: "files(id, name)", // Hanya mengambil ID dan nama file/folder.
+    orderBy: "name desc", // Mengurutkan hasil berdasarkan nama secara menurun.
   });
   return res.data.files || []; // Mengembalikan daftar folder atau array kosong jika tidak ada.
 }
@@ -41,7 +41,7 @@ export async function getMediaFiles(
       // Query untuk mencari file: 'folderId' adalah induk, dan tidak dihapus.
       q: `'${folderId}' in parents and trashed = false`,
       // Mengambil next page token, id, name, mimeType, dan webContentLink dari file.
-      fields: 'nextPageToken, files(id, name, mimeType, webContentLink)',
+      fields: "nextPageToken, files(id, name, mimeType, webContentLink)",
       pageSize: limit, // Menggunakan parameter limit untuk menentukan jumlah hasil per halaman.
       pageToken: pageToken || undefined, // Menggunakan pageToken jika disediakan.
     });
@@ -51,7 +51,7 @@ export async function getMediaFiles(
       nextPageToken: response.data.nextPageToken || null, // Mengembalikan token halaman berikutnya atau null.
     };
   } catch (error) {
-    console.error('Error fetching media files:', error); // Mencatat error ke konsol
+    console.error("Error fetching media files:", error); // Mencatat error ke konsol
     throw error; // Melemparkan error untuk penanganan lebih lanjut.
   }
 }
@@ -63,32 +63,32 @@ export async function getArchiveNavigation(
 ) {
   try {
     let data = [];
-    let view = 'years';
-    let baseUrl = '?yearId=';
+    let view = "years";
+    let baseUrl = "?yearId=";
 
     if (activityId) {
-      view = 'files';
+      view = "files";
       // Data file akan dihandle oleh getMediaFiles secara terpisah
-      return { data: [], view, baseUrl: '' };
+      return { data: [], view, baseUrl: "" };
     }
 
     if (monthId) {
       data = await getFolders(monthId);
-      view = 'activities';
+      view = "activities";
       baseUrl = `?yearId=${yearId}&monthId=${monthId}&activityId=`;
     } else if (yearId) {
       data = await getFolders(yearId);
-      view = 'months';
+      view = "months";
       baseUrl = `?yearId=${yearId}&monthId=`;
     } else {
       data = await getFolders(ROOT_ID);
-      view = 'years';
-      baseUrl = '?yearId=';
+      view = "years";
+      baseUrl = "?yearId=";
     }
 
     return { data, view, baseUrl };
   } catch (error) {
-    console.error('Fungsi getArchiveNavigation Error:', error);
-    throw new Error('Gagal mengambil struktur arsip.');
+    console.error("Fungsi getArchiveNavigation Error:", error);
+    throw new Error("Gagal mengambil struktur arsip.");
   }
 }

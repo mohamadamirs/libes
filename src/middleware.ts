@@ -1,34 +1,46 @@
+// src/middleware.ts
 import { defineMiddleware } from "astro:middleware";
-import { supabase } from "./lib/supabase";
+import { createSupabaseServerClient } from "./lib/supabase"; // BENAR
 
-export const onRequest = defineMiddleware(async (context, next) => {
-  // Hanya jalankan proteksi jika URL dimulai dengan /admin
-  if (context.url.pathname.startsWith("/admin")) {
-    const accessToken = context.cookies.get("sb-access-token")?.value;
-    const refreshToken = context.cookies.get("sb-refresh-token")?.value;
+export const onRequest = defineMiddleware(
+  async ({ cookies, url, redirect, locals }, next) => {
+    const isProtectedPath = url.pathname.startsWith("/admin") || url.pathname.startsWith("/user");
+    const isAuthPath = url.pathname === "/login" || url.pathname === "/register";
 
-    // 1. Jika tidak ada token, langsung tendang ke login
-    if (!accessToken || !refreshToken) {
-      return context.redirect("/login");
+    const supabase = createSupabaseServerClient(cookies); // BENAR
+    const { data: { user } } = await supabase.auth.getUser();
+
+    // Jika user sudah login
+    if (user) {
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("role, full_name")
+        .eq("id", user.id)
+        .single();
+
+      console.log("=== DEBUG MIDDLEWARE AUTH ===");
+      console.log("USER ID:", user.id);
+      console.log("PROFILE DATA:", profile);
+      if (profileError) console.error("PROFILE ERROR:", profileError.message);
+      console.log("===============================");
+
+      const role = profile?.role || "user";
+      locals.user = user;
+      locals.role = role;
+      locals.user_name = profile?.full_name || user.email?.split('@')[0] || "User";
+
+      if (isAuthPath) {
+        return redirect(role === "admin" ? "/admin" : "/user");
+      }
+      if (url.pathname.startsWith("/admin") && role !== "admin") {
+        return redirect("/user");
+      }
+    } else { // Jika user belum login
+      if (isProtectedPath) {
+        return redirect("/login");
+      }
     }
 
-    // 2. Verifikasi token ke Supabase (Ini pengganti verifikasi JWT manual)
-    const { data, error } = await supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken,
-    });
-
-    // 3. Jika token palsu atau expired, hapus cookie dan redirect
-    if (error) {
-      context.cookies.delete("sb-access-token", { path: "/" });
-      context.cookies.delete("sb-refresh-token", { path: "/" });
-      return context.redirect("/login");
-    }
-
-    // Jika aman, lanjut ke halaman yang dituju
     return next();
   }
-
-  // Jika bukan halaman /admin, biarkan lewat
-  return next();
-});
+);

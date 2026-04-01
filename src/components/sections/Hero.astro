@@ -1,0 +1,41 @@
+---
+import Badge from "../ui/Badge.astro";
+---
+<section id="hero" class="relative min-h-screen md:min-h-[90vh] flex items-center pt-24 pb-12 px-4 overflow-hidden bg-white text-left">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 opacity-30">
+    <div class="absolute top-[-5%] left-[-5%] w-[50%] h-[50%] bg-blue-400 rounded-full blur-[100px]"></div>
+    <div class="absolute bottom-[-5%] right-[-5%] w-[50%] h-[50%] bg-indigo-400 rounded-full blur-[100px]"></div>
+  </div>
+
+  <div class="container mx-auto max-w-7xl">
+    <div class="flex flex-col items-start gap-10">
+      <div class="w-full max-w-4xl text-left space-y-6">
+        <div class="inline-flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100 shadow-sm">
+          <span class="relative flex h-1.5 w-1.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-600"></span>
+          </span>
+          <span class="text-[8px] font-black uppercase tracking-[0.2em] text-blue-700">Kolektif Literasi Brebesan</span>
+        </div>
+
+        <h1 class="text-4xl md:text-7xl lg:text-8xl font-black text-slate-900 leading-[1.1] md:leading-[0.95] tracking-tight">
+          Membaca, <br />
+          <span class="text-blue-600 italic font-serif font-light">Berdaya,</span> <br class="hidden md:block" />
+          Bergerak.
+        </h1>
+
+        <p class="text-sm md:text-xl text-slate-600 max-w-xl leading-relaxed font-medium">
+          Ruang temu alternatif di Brebes untuk merawat nalar, bertukar ide, dan menjalin kedekatan melalui aksi nyata.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-start gap-3 pt-2">
+          <a href="https://wa.me/628993986415" target="_blank" class="group flex items-center justify-center gap-2 w-full sm:w-auto bg-slate-900 text-white py-4 px-8 rounded-2xl font-bold shadow-xl shadow-slate-900/10 transition-all hover:bg-blue-600 hover:-translate-y-0.5 text-sm">
+            <span>Gabung Komunitas</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+          </a>
+          <a href="/ruang-suara" class="flex items-center justify-center gap-2 w-full sm:w-auto bg-white text-slate-900 py-4 px-8 rounded-2xl font-bold border border-slate-200 transition-all hover:bg-slate-50 text-sm">Baca Ruang Suara</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
